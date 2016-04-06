@@ -1827,7 +1827,33 @@ public class SparseMatrix implements Matrix, Serializable {
     }
 
     public double cond2(){
-        return this.norm2()*Matlab.inv(this).norm2();
+        if(this.getRowDimension()==this.getColumnDimension()) {
+            return this.norm2()*Matlab.inv(this).norm2();
+        }
+        double epsilon = 10E-18;
+        Matrix AtA = this.copy().transpose().mtimes(this.copy());
+        int m = AtA.getRowDimension();
+        double temp;
+        double diag[]= new double[m];
+        Matrix QR[] = new Matrix[3];
+        do{
+            temp=0;
+            QR= QRDecomposition.decompose(AtA, false);
+            AtA = QR[1].mtimes(QR[0]);
+            for (int i = 0; i < m; i++) {
+                for (int j = m-1; j > i  ; j--) {
+                    temp+=AtA.getEntry(j,i);
+                }
+            }
+
+        }while (temp>epsilon);
+
+        for (int i = 0; i < m; i++) {
+            diag[i] = AtA.getEntry(i,i);
+        }
+        Arrays.sort(diag);
+        int min = this.getColumnDimension()>this.getRowDimension() ? this.getRowDimension() : this.getColumnDimension();
+        return Math.sqrt(diag[m-1]/diag[m-min]);
     }
 
 }

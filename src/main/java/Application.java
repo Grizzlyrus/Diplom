@@ -4,10 +4,7 @@ import decomposition.QRDecomposition;
 import matrix.DenseMatrix;
 import matrix.Matrix;
 import matrix.SparseMatrix;
-import utils.MTXReader;
-import utils.Matlab;
-import utils.Portrait;
-import utils.Printer;
+import utils.*;
 import vector.DenseVector;
 import vector.SparseVector;
 import vector.Vector;
@@ -20,15 +17,19 @@ import java.io.IOException;
 public class Application {
     public static void main(String args[]){
         MTXReader reader = new MTXReader();
+        MTXWriter writer = new MTXWriter();
         try {
 
 
-            String filename = "bcsstk08";
+            String filename = "ash958-1";
             reader.read("C:\\Users\\Admin\\IdeaProjects\\Diplom\\src\\main\\resources\\matrixes\\"+filename+".mtx");
             SparseMatrix matrix = reader.getMatrix();
 
-            SparseMatrix A = (SparseMatrix)matrix.getSubMatrix(0,matrix.getRowDimension(),0,matrix.getColumnDimension()-150);
-//            Portrait port = new Portrait(A,filename);
+
+//            SparseMatrix A = (SparseMatrix)matrix.getSubMatrix(0,matrix.getRowDimension(),0,matrix.getColumnDimension()-250);
+            SparseMatrix A = (SparseMatrix)matrix.copy();
+//            writer.write("C:\\Users\\Admin\\IdeaProjects\\Diplom\\src\\main\\resources\\matrixes\\"+filename+"-1.mtx",A);
+            Portrait port = new Portrait(A,filename);
 
 
             double[] Xet = new double[A.getColumnDimension()];
@@ -42,36 +43,41 @@ public class Application {
             long start = System.currentTimeMillis();
             QRDecomposition qrd = new QRDecomposition(A);
             Vector qrX = qrd.solve(b);
-            Printer.fprintf("QR-разложение: %.10f seconds.\n", new Object[]{Float.valueOf((float)(System.currentTimeMillis() - start) / 1000.0F)});
+            Printer.fprintf("QR-СЂР°Р·Р»РѕР¶РµРЅРёРµ: %.10f seconds.\n", new Object[]{Float.valueOf((float)(System.currentTimeMillis() - start) / 1000.0F)});
 
             SparseMatrix AtA = (SparseMatrix)A.transpose().mtimes(A);
-            SparseVector Atb = (SparseVector)A.transpose().operate(b);
+            DenseVector Atb = (DenseVector)A.transpose().operate(b);
 
             start = System.currentTimeMillis();
             CholesskyDecomposition chd = new CholesskyDecomposition(AtA);
             Vector chX = chd.solve(Atb);
-            Printer.fprintf("Разложение Холецкого: %.10f seconds.\n", new Object[]{Float.valueOf((float)(System.currentTimeMillis() - start) / 1000.0F)});
+            Printer.fprintf("Р Р°Р·Р»РѕР¶РµРЅРёРµ РҐРѕР»РµС†РєРѕРіРѕ: %.10f seconds.\n", new Object[]{Float.valueOf((float)(System.currentTimeMillis() - start) / 1000.0F)});
 
             start = System.currentTimeMillis();
             LUDecomposition lud = new LUDecomposition(AtA);
             Vector luX = lud.solve(Atb);
-            Printer.fprintf("LUP-разложение: %.10f seconds.\n", new Object[]{Float.valueOf((float)(System.currentTimeMillis() - start) / 1000.0F)});
+            Printer.fprintf("LUP-СЂР°Р·Р»РѕР¶РµРЅРёРµ: %.10f seconds.\n", new Object[]{Float.valueOf((float)(System.currentTimeMillis() - start) / 1000.0F)});
 
             System.out.println("------------------------------");
-            System.out.println("Размерность матрицы: " + A.getRowDimension() + "x" + A.getColumnDimension());
-            System.out.println("Количество ненулевых элементов матрицы A: " + A.getNNZ() + "; Общее количество элементов: " + A.getColumnDimension()*A.getRowDimension());
-            System.out.println("Число обусловленности матрицы A: cond2 = " + A.cond2());
-            System.out.println("Количество ненулевых элементов матрицы AtA: " + AtA.getNNZ() + "; Общее количество элементов: " + AtA.getColumnDimension()*AtA.getRowDimension());
-            System.out.println("Число обусловленности матрицы AtA: cond2 = " + AtA.cond2());
+            System.out.println("Р Р°Р·РјРµСЂРЅРѕСЃС‚СЊ РјР°С‚СЂРёС†С‹: " + A.getRowDimension() + "x" + A.getColumnDimension());
+            System.out.println("РљРѕР»РёС‡РµСЃС‚РІРѕ РЅРµРЅСѓР»РµРІС‹С… СЌР»РµРјРµРЅС‚РѕРІ РјР°С‚СЂРёС†С‹ A: " + A.getNNZ());
+            System.out.println("Р§РёСЃР»Рѕ РѕР±СѓСЃР»РѕРІР»РµРЅРЅРѕСЃС‚Рё РјР°С‚СЂРёС†С‹ A: cond2 = " + A.cond2());
+            System.out.println("РљРѕР»РёС‡РµСЃС‚РІРѕ РЅРµРЅСѓР»РµРІС‹С… СЌР»РµРјРµРЅС‚РѕРІ РјР°С‚СЂРёС†С‹ AtA: " + AtA.getNNZ());
+            System.out.println("Р§РёСЃР»Рѕ РѕР±СѓСЃР»РѕРІР»РµРЅРЅРѕСЃС‚Рё РјР°С‚СЂРёС†С‹ AtA: cond2 = " + AtA.cond2());
             System.out.println("------------------------------");
-            System.out.println("QR-разложение");
-            System.out.println("Относительная погрешность: " + b.minus(A.operate(qrX)).norm2()/XetVector.norm2());
+            System.out.println("QR-СЂР°Р·Р»РѕР¶РµРЅРёРµ");
+            System.out.println("РћС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ РїРѕРіСЂРµС€РЅРѕСЃС‚СЊ: " + b.minus(A.operate(qrX)).norm2()/XetVector.norm2());
+            System.out.println("РљРѕР»РёС‡РµСЃС‚РІРѕ РЅРµРЅСѓР»РµРІС‹С… СЌР»РµРјРµРЅС‚РѕРІ РІ РјР°С‚СЂРёС†Рµ Q: " + Matlab.sparse(qrd.getQ()).getNNZ());
+            System.out.println("РљРѕР»РёС‡РµСЃС‚РІРѕ РЅРµРЅСѓР»РµРІС‹С… СЌР»РµРјРµРЅС‚РѕРІ РІ РјР°С‚СЂРёС†Рµ R: " + Matlab.sparse(qrd.getR()).getNNZ());
             System.out.println("------------------------------");
-            System.out.println("Разложение Холецкого (матрица AtA)");
-            System.out.println("Относительная погрешность: " + Atb.minus(AtA.operate(chX)).norm2()/XetVector.norm2());
+            System.out.println("Р Р°Р·Р»РѕР¶РµРЅРёРµ РҐРѕР»РµС†РєРѕРіРѕ (РјР°С‚СЂРёС†Р° AtA)");
+            System.out.println("РћС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ РїРѕРіСЂРµС€РЅРѕСЃС‚СЊ: " + Atb.minus(AtA.operate(chX)).norm2()/XetVector.norm2());
+            System.out.println("РљРѕР»РёС‡РµСЃС‚РІРѕ РЅРµРЅСѓР»РµРІС‹С… СЌР»РµРјРµРЅС‚РѕРІ РІ РјР°С‚СЂРёС†Рµ L: " + Matlab.sparse(chd.getL()).getNNZ());
             System.out.println("------------------------------");
-            System.out.println("LUP-разложение (матрица AtA)");
-            System.out.println("Относительная погрешность: " + Atb.minus(AtA.operate(luX)).norm2()/XetVector.norm2());
+            System.out.println("LUP-СЂР°Р·Р»РѕР¶РµРЅРёРµ (РјР°С‚СЂРёС†Р° AtA)");
+            System.out.println("РћС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ РїРѕРіСЂРµС€РЅРѕСЃС‚СЊ: " + Atb.minus(AtA.operate(luX)).norm2()/XetVector.norm2());
+            System.out.println("РљРѕР»РёС‡РµСЃС‚РІРѕ РЅРµРЅСѓР»РµРІС‹С… СЌР»РµРјРµРЅС‚РѕРІ РІ РјР°С‚СЂРёС†Рµ L: " + Matlab.sparse(lud.getL()).getNNZ());
+            System.out.println("РљРѕР»РёС‡РµСЃС‚РІРѕ РЅРµРЅСѓР»РµРІС‹С… СЌР»РµРјРµРЅС‚РѕРІ РІ РјР°С‚СЂРёС†Рµ U: " + Matlab.sparse(lud.getU()).getNNZ());
 
         }catch (IOException e){
             System.out.println("Error");

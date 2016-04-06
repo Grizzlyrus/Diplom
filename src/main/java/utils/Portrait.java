@@ -23,17 +23,17 @@ public class Portrait {
         this.m = A.getRowDimension();
         this.n = A.getColumnDimension();
 
-        img = new BufferedImage(m * 10, n * 10, BufferedImage.TYPE_INT_RGB);
+        img = new BufferedImage(n * 10, m * 10, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = (Graphics2D) img.getGraphics();
         g.setColor(Color.WHITE);
-        g.fillRect(0, 0, m * 10, n * 10);
+        g.fillRect(0, 0, n * 10, m * 10);
         g.setColor(Color.BLACK);
 
 
         for(int i = 0;i<m;i++) {
             for(int j = 0;j<n;j++){
                 if(A.getEntry(i, j)!=0){
-                    g.fillOval(10 * i + 5, 10 * j + 5, 5, 5);
+                    g.fillOval(10 * j + 5, 10 * i + 5, 5, 5);
                 }
             }
         }
