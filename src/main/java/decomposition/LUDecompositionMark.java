@@ -79,6 +79,17 @@ public class LUDecompositionMark {
                 i1=Integer.MAX_VALUE;
                 j1=Integer.MAX_VALUE;
 
+                int mark = Integer.MAX_VALUE;
+                maxVal = Double.MIN_VALUE;
+
+                for(A_i=i;A_i<n;++A_i){
+                    for (A_j=i;A_j<n;++A_j){
+                        if(Math.abs(AVs[A_i][A_j])>maxVal){
+                            maxVal = Math.abs(AVs[A_i][A_j]);
+                        }
+                    }
+                }
+
 
                 for(A_i=i;A_i<n;++A_i){
                     for (A_j=i;A_j<n;++A_j){
@@ -89,12 +100,21 @@ public class LUDecompositionMark {
                     }
                 }
 
-                for(int e=i;e<n;e++){
-                    if(nnr[e]<i1){ i1=nnr[e];}
-                }
+//                for(int e=i;e<n;e++){
+//                    if(nnr[e]<i1){ i1=nnr[e];}
+//                }
+//
+//                for(int e=i;e<n;e++){
+//                    if(nnc[e]<j1){ j1=nnc[e];}
+//                }
 
                 for(int e=i;e<n;e++){
-                    if(nnc[e]<j1){ j1=nnc[e];}
+                    for(int e1=i;e1<n;e1++){
+                        if((nnr[e]-1)*(nnc[e1]-1)<mark && Math.abs(AVs[e][e1])>maxVal/20){
+                            i1=nnr[e];
+                            j1=nnc[e1];
+                        }
+                    }
                 }
 
                 maxVal = AVs[i1][j1];
@@ -171,13 +191,25 @@ public class LUDecompositionMark {
             }
 
             for(i = 0; i < n; ++i) {
-//                maxVal = var18[i].get(i);
-//                j = i;
+
 
                 int[] nnr = new int[n];
                 int[] nnc = new int[n];
                 i1=Integer.MAX_VALUE;
                 j1=Integer.MAX_VALUE;
+
+                int mark = Integer.MAX_VALUE;
+                maxVal = Double.MIN_VALUE;
+
+                for(A_i=i;A_i<n;++A_i){
+                    for (A_j=i;A_j<n;++A_j){
+                        if(Math.abs(var18[A_i].get(A_j))>maxVal){
+                            maxVal = Math.abs(var18[A_i].get(A_j));
+                        }
+                    }
+                }
+
+
 
                 for(A_i=i;A_i<n;++A_i){
                     for (A_j=i;A_j<n;++A_j){
@@ -188,12 +220,22 @@ public class LUDecompositionMark {
                     }
                 }
 
-                for(int e=i;e<n;e++){
-                    if(nnr[e]<i1){ i1=nnr[e];}
-                }
+//                for(int e=i;e<n;e++){
+//                    if(nnr[e]<i1){ i1=nnr[e];}
+//                }
+//
+//                for(int e=i;e<n;e++){
+//                    if(nnc[e]<j1){ j1=nnc[e];}
+//                }
 
-                for(int e=i;e<n;e++){
-                    if(nnc[e]<j1){ j1=nnc[e];}
+                for(int e=i;e<n;++e){
+                    for(int e1=i;e1<n;++e1){
+                        if((nnr[e]-1)*(nnc[e1]-1)<mark && Math.abs(var18[e].get(e1))>=maxVal/50){
+                            mark = (nnr[e]-1)*(nnc[e1]-1);
+                            i1=e;
+                            j1=e1;
+                        }
+                    }
                 }
 
                 maxVal = var18[i1].get(j1);
@@ -303,6 +345,16 @@ public class LUDecompositionMark {
                 i1=Integer.MAX_VALUE;
                 j1=Integer.MAX_VALUE;
 
+                int mark = Integer.MAX_VALUE;
+                maxVal = Double.MIN_VALUE;
+
+                for(A_i=i;A_i<n;++A_i){
+                    for (A_j=i;A_j<n;++A_j){
+                        if(Math.abs(AVs[A_i][A_j])>maxVal){
+                            maxVal = Math.abs(AVs[A_i][A_j]);
+                        }
+                    }
+                }
 
                 for(A_i=i;A_i<n;++A_i){
                     for (A_j=i;A_j<n;++A_j){
@@ -313,13 +365,23 @@ public class LUDecompositionMark {
                     }
                 }
 
+//                for(int e=i;e<n;e++){
+//                    if(nnr[e]<i1){ i1=nnr[e];}
+//                }
+//
+//                for(int e=i;e<n;e++){
+//                    if(nnc[e]<j1){ j1=nnc[e];}
+//                }
                 for(int e=i;e<n;e++){
-                    if(nnr[e]<i1){ i1=nnr[e];}
+                    for(int e1=i;e1<n;e1++){
+                        if((nnr[e]-1)*(nnc[e1]-1)<mark && Math.abs(AVs[e][e1])>maxVal/20){
+                            i1=nnr[e];
+                            j1=nnc[e1];
+                        }
+                    }
                 }
 
-                for(int e=i;e<n;e++){
-                    if(nnc[e]<j1){ j1=nnc[e];}
-                }
+
 
                 maxVal = AVs[i1][j1];
 
@@ -400,6 +462,18 @@ public class LUDecompositionMark {
                 i1=Integer.MAX_VALUE;
                 j1=Integer.MAX_VALUE;
 
+                int mark = Integer.MAX_VALUE;
+
+                maxVal = Double.MIN_VALUE;
+
+                for(A_i=i;A_i<n;++A_i){
+                    for (A_j=i;A_j<n;++A_j){
+                        if(Math.abs(var18[A_i].get(A_j))>maxVal){
+                            maxVal = Math.abs(var18[A_i].get(A_j));
+                        }
+                    }
+                }
+
                 for(A_i=i;A_i<n;++A_i){
                     for (A_j=i;A_j<n;++A_j){
                         if(var18[A_i].get(A_j)!=0.0D){
@@ -409,12 +483,22 @@ public class LUDecompositionMark {
                     }
                 }
 
-                for(int e=i;e<n;e++){
-                    if(nnr[e]<i1){ i1=nnr[e];}
-                }
+//                for(int e=i;e<n;e++){
+//                    if(nnr[e]<i1){ i1=nnr[e];}
+//                }
+//
+//                for(int e=i;e<n;e++){
+//                    if(nnc[e]<j1){ j1=nnc[e];}
+//                }
+
 
                 for(int e=i;e<n;e++){
-                    if(nnc[e]<j1){ j1=nnc[e];}
+                    for(int e1=i;e1<n;e1++){
+                        if((nnr[e]-1)*(nnc[e1]-1)<mark && Math.abs(var18[e].get(e1))>maxVal/20){
+                            i1=nnr[e];
+                            j1=nnc[e1];
+                        }
+                    }
                 }
 
                 maxVal = var18[i1].get(j1);
