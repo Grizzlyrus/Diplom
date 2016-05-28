@@ -20,6 +20,8 @@ public class LUDecompositionMark {
     private Matrix Pr;
     private int numRowExchange;
     private int numColumnExchange;
+    private int Lfilling = 0;
+    private int Ufilling = 0;
 
     public Matrix getL() {
         return this.L;
@@ -76,8 +78,8 @@ public class LUDecompositionMark {
             for(i = 0; i < n; ++i) {
                 int[] nnr = new int[n];
                 int[] nnc = new int[n];
-                i1=Integer.MAX_VALUE;
-                j1=Integer.MAX_VALUE;
+                i1=i;
+                j1=i;
 
                 int mark = Integer.MAX_VALUE;
                 maxVal = Double.MIN_VALUE;
@@ -111,8 +113,9 @@ public class LUDecompositionMark {
                 for(int e=i;e<n;e++){
                     for(int e1=i;e1<n;e1++){
                         if((nnr[e]-1)*(nnc[e1]-1)<mark && Math.abs(AVs[e][e1])>maxVal/20){
-                            i1=nnr[e];
-                            j1=nnc[e1];
+                            i1=e;
+                            j1=e1;
+                            mark = (nnr[e]-1)*(nnc[e1]-1);
                         }
                     }
                 }
@@ -195,8 +198,8 @@ public class LUDecompositionMark {
 
                 int[] nnr = new int[n];
                 int[] nnc = new int[n];
-                i1=Integer.MAX_VALUE;
-                j1=Integer.MAX_VALUE;
+                i1=i;
+                j1=i;
 
                 int mark = Integer.MAX_VALUE;
                 maxVal = Double.MIN_VALUE;
@@ -230,7 +233,7 @@ public class LUDecompositionMark {
 
                 for(int e=i;e<n;++e){
                     for(int e1=i;e1<n;++e1){
-                        if((nnr[e]-1)*(nnc[e1]-1)<mark && Math.abs(var18[e].get(e1))>=maxVal/50){
+                        if((nnr[e]-1)*(nnc[e1]-1)<mark && Math.abs(var18[e].get(e1))>=maxVal/1000){
                             mark = (nnr[e]-1)*(nnc[e1]-1);
                             i1=e;
                             j1=e1;
@@ -305,7 +308,16 @@ public class LUDecompositionMark {
             LUP[2] = Matlab.sparseRowVectors2SparseMatrix(var19);
             LUP[3] = Matlab.sparseRowVectors2SparseMatrix(var37);
         }
-
+        for (int q = 0; q < A.getRowDimension(); q++) {
+            for (int s = 0; s < A.getColumnDimension(); s++) {
+                if(LUP[0].getEntry(q,s)!=0.0D && A.getEntry(q,s)==0.0D){
+                    Lfilling++;
+                }
+                if(LUP[1].getEntry(q,s)!=0.0D && A.getEntry(q,s)==0.0D){
+                    Ufilling++;
+                }
+            }
+        }
         return LUP;
     }
 
@@ -342,8 +354,8 @@ public class LUDecompositionMark {
             for(i = 0; i < n; ++i) {
                 int[] nnr = new int[n];
                 int[] nnc = new int[n];
-                i1=Integer.MAX_VALUE;
-                j1=Integer.MAX_VALUE;
+                i1=i;
+                j1=i;
 
                 int mark = Integer.MAX_VALUE;
                 maxVal = Double.MIN_VALUE;
@@ -375,8 +387,9 @@ public class LUDecompositionMark {
                 for(int e=i;e<n;e++){
                     for(int e1=i;e1<n;e1++){
                         if((nnr[e]-1)*(nnc[e1]-1)<mark && Math.abs(AVs[e][e1])>maxVal/20){
-                            i1=nnr[e];
-                            j1=nnc[e1];
+                            i1=e;
+                            j1=e1;
+                            mark = (nnr[e]-1)*(nnc[e1]-1);
                         }
                     }
                 }
@@ -459,8 +472,8 @@ public class LUDecompositionMark {
 
                 int[] nnr = new int[n];
                 int[] nnc = new int[n];
-                i1=Integer.MAX_VALUE;
-                j1=Integer.MAX_VALUE;
+                i1=i;
+                j1=i;
 
                 int mark = Integer.MAX_VALUE;
 
@@ -495,8 +508,10 @@ public class LUDecompositionMark {
                 for(int e=i;e<n;e++){
                     for(int e1=i;e1<n;e1++){
                         if((nnr[e]-1)*(nnc[e1]-1)<mark && Math.abs(var18[e].get(e1))>maxVal/20){
-                            i1=nnr[e];
-                            j1=nnc[e1];
+                            i1=e;
+                            j1=e1;
+                            mark = (nnr[e]-1)*(nnc[e1]-1);
+
                         }
                     }
                 }
@@ -566,6 +581,7 @@ public class LUDecompositionMark {
             LUP[2] = Matlab.sparseRowVectors2SparseMatrix(var19);
             LUP[3] = Matlab.sparseRowVectors2SparseMatrix(var37);
         }
+
 
         return LUP;
     }
@@ -760,6 +776,7 @@ public class LUDecompositionMark {
             }
 
             res = new DenseMatrix(var29);
+            res = Matlab.full(this.Pr.mtimes(res));
         } else if(this.L instanceof SparseMatrix) {
             D = Matlab.full(this.P.mtimes(B)).getData();
             DRow_i = (double[])null;
@@ -827,6 +844,7 @@ public class LUDecompositionMark {
             }
 
             res = new DenseMatrix(var29);
+            res = Matlab.full(this.Pr.mtimes(res));
         }
 
         return res;
@@ -870,4 +888,13 @@ public class LUDecompositionMark {
             return this.numRowExchange % 2 == 0?s:-s;
         }
     }
+
+    public int getLfilling(){
+        return Ufilling;
+    }
+
+    public int getUfilling(){
+        return Lfilling;
+    }
+
 }

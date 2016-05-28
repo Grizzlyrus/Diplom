@@ -18,11 +18,9 @@ public class MTXReader {
         InputStream s = new FileInputStream(filename);
         BufferedReader br = new BufferedReader(new InputStreamReader(s));
 
-        // read type code initial line
         String line = br.readLine();
         typecode = line;
 
-        // read comment lines if any
         boolean comment = true;
 
         boolean issymmetric = false;
@@ -42,14 +40,14 @@ public class MTXReader {
 
         }
 
-        // line now contains the size information which needs to be parsed
+
         String[] str = line.split("( )+");
         int nRows = (Integer.valueOf(str[0].trim())).intValue();
         int nColumns = (Integer.valueOf(str[1].trim())).intValue();
         int nNonZeros = (Integer.valueOf(str[2].trim())).intValue();
 
 
-        // now we're into the data section
+
         matrix = new SparseMatrix(nRows, nColumns);
         while (true) {
             double x;

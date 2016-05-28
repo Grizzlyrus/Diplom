@@ -18,6 +18,8 @@ public class LUDecomposition {
     private Matrix U;
     private Matrix P;
     private int numRowExchange;
+    private int Lfilling=0;
+    private int Ufilling=0;
 
     public Matrix getL() {
         return this.L;
@@ -68,7 +70,7 @@ public class LUDecomposition {
                 j = i;
 
                 for(A_i = i + 1; A_i < n; ++A_i) {
-                    if(maxVal < AVs[A_i][i]) {
+                    if(Math.abs(maxVal) < Math.abs(AVs[A_i][i])) {
                         j = A_i;
                         maxVal = AVs[A_i][i];
                     }
@@ -132,7 +134,7 @@ public class LUDecomposition {
 
                 for(A_i = i + 1; A_i < n; ++A_i) {
                     L_ki = var18[A_i].get(i);
-                    if(maxVal < L_ki) {
+                    if(Math.abs(maxVal) < Math.abs(L_ki)) {
                         j = A_i;
                         maxVal = L_ki;
                     }
@@ -181,7 +183,16 @@ public class LUDecomposition {
             LUP[1] = Matlab.sparseRowVectors2SparseMatrix(var18);
             LUP[2] = Matlab.sparseRowVectors2SparseMatrix(var19);
         }
-
+        for (int q = 0; q < A.getRowDimension(); q++) {
+            for (int s = 0; s < A.getColumnDimension(); s++) {
+                if(LUP[0].getEntry(q,s)!=0.0D && A.getEntry(q,s)==0.0D){
+                    Lfilling++;
+                }
+                if(LUP[1].getEntry(q,s)!=0.0D && A.getEntry(q,s)==0.0D){
+                    Ufilling++;
+                }
+            }
+        }
         return LUP;
     }
 
@@ -624,5 +635,13 @@ public class LUDecomposition {
 
             return this.numRowExchange % 2 == 0?s:-s;
         }
+    }
+
+    public int getLfilling(){
+        return Ufilling;
+    }
+
+    public int getUfilling(){
+        return Lfilling;
     }
 }
